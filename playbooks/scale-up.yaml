@@ -1,0 +1,45 @@
+---
+# Set new number of nodes
+- hosts: masters
+  tasks:
+  - name: Get number of nodes
+    shell: oc get nodes | grep app-node -c
+    register: oc_old_result
+  - name: Set new number of nodes
+    set_fact:
+      # Number of nodes in the new configuration (incremented by 1 by default)
+      nodes: "{{ oc_old_result.stdout | int + 1 }}"
+  - name: Check that new value is higher
+    when: 'nodes | int <= oc_old_result.stdout | int'
+    fail:
+      msg: >
+        FAIL: New number of nodes must be higher than the current one
+        ({{ oc_old_result.stdout | int }}).
+
+# Share the new value on localhost for provisioning and installation
+- hosts: localhost
+  tasks:
+  - name: Set increased number of nodes for provisioning and installation
+    set_fact:
+      openstack_num_nodes: "{{ nodes }}"
+
+# Run provision.yaml with higher number of nodes to create a new app-node VM
+- include: provisioning/openstack/provision.yaml
+
+# Run config.yml to update openshift installation (add the new node(s))
+- include: ../../openshift-ansible/playbooks/byo/config.yml
+
+# Verify new number of nodes
+- hosts: masters
+  tasks:
+  - name: Get number of nodes
+    shell: oc get nodes | grep app-node -c
+    register: oc_new_result
+  - debug:
+      var: oc_new_result
+  - name: Check that value has been updated
+    when: 'nodes | int != oc_new_result.stdout | int'
+    fail:
+      msg: >
+        FAIL: Number of application nodes has not been increased accordingly
+        (it should be {{ nodes }} but it is {{ oc_new_result.stdout | int }}).
