@@ -35,8 +35,6 @@
   - name: Get number of nodes
     shell: oc get nodes | grep app-node -c
     register: oc_new_result
-  - debug:
-      var: oc_new_result
   - name: Check that value has been updated
     when: 'nodes | int != oc_new_result.stdout | int'
     fail:
