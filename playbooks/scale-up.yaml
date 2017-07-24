@@ -38,15 +38,13 @@
     register: oc_new_result
   - name: Check that the actual number of nodes matches defined value
     assert:
-      that:
-        - 'nodes | int == oc_new_result.stdout | int'
+      that: 'nodes | int == oc_new_result.stdout | int'
       msg: >
         FAIL: Number of application nodes has not been increased accordingly
         (it should be {{ nodes }} but it is {{ oc_new_result.stdout | int }}).
   - name: Check that current number of nodes has been updated in vars
     assert:
-      that:
-        - 'nodes | int == openstack_num_nodes | int'
+      that: 'nodes | int == openstack_num_nodes | int'
       msg: >
         FAIL: Number of application nodes has not been updated in vars
         (it should be {{ nodes }} but it is {{ openstack_num_nodes | int }}).
