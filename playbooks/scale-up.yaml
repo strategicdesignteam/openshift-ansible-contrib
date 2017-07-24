@@ -10,8 +10,8 @@
       # Number of nodes in the new configuration (incremented by 1 by default)
       nodes: "{{ oc_old_result.stdout | int + 1 }}"
   - name: Check that new value is higher
-    when: 'nodes | int <= oc_old_result.stdout | int'
-    fail:
+    assert:
+      that: 'nodes | int > oc_old_result.stdout | int'
       msg: >
         FAIL: New number of nodes must be higher than the current one
         ({{ oc_old_result.stdout | int }}).
@@ -27,6 +27,7 @@
 - include: provisioning/openstack/provision.yaml
 
 # Run config.yml to update openshift installation (add the new node(s))
+# TODO kpilatov: let the user specify the path using a variable
 - include: ../../openshift-ansible/playbooks/byo/config.yml
 
 # Verify new number of nodes
@@ -35,9 +36,17 @@
   - name: Get number of nodes
     shell: oc get nodes | grep app-node -c
     register: oc_new_result
-  - name: Check that value has been updated
-    when: 'nodes | int != oc_new_result.stdout | int'
-    fail:
+  - name: Check that the actual number of nodes matches defined value
+    assert:
+      that:
+        - 'nodes | int == oc_new_result.stdout | int'
       msg: >
         FAIL: Number of application nodes has not been increased accordingly
         (it should be {{ nodes }} but it is {{ oc_new_result.stdout | int }}).
+  - name: Check that current number of nodes has been updated in vars
+    assert:
+      that:
+        - 'nodes | int == openstack_num_nodes | int'
+      msg: >
+        FAIL: Number of application nodes has not been updated in vars
+        (it should be {{ nodes }} but it is {{ openstack_num_nodes | int }}).
