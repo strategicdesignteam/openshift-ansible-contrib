@@ -62,10 +62,9 @@ fi
 # Run upscaling_pre-tasks.yaml to:
 # - do preverification based on entered number of nodes
 # - update openstack_num_nodes variable in inventory
-# TODO remove scaleup
 
 ansible-playbook $ANSIBLE_PARAMS -i "$INVENTORY" \
-openshift-ansible-contrib-scaleup/playbooks/upscaling_pre-tasks.yaml \
+openshift-ansible-contrib/playbooks/upscaling_pre-tasks.yaml \
 -e "$EXTERNAL_VAR" -e "inv_directory=$INVENTORY" $VERBOSE
 
 # Check that pre-tasks were successfully completed
@@ -76,5 +75,5 @@ fi
 # Run upscaling_scale-up.yaml to rerun provisioning and installation
 # and verify the result
 ansible-playbook $ANSIBLE_PARAMS -i "$INVENTORY" \
-openshift-ansible-contrib-scaleup/playbooks/upscaling_scale-up.yaml \
+openshift-ansible-contrib/playbooks/upscaling_scale-up.yaml \
 -e "$EXTERNAL_VAR" $VERBOSE
