@@ -1,3 +1,4 @@
+---
 # Run provision.yaml with higher number of nodes to create a new app-node VM
 - include: provisioning/openstack/provision.yaml
 
