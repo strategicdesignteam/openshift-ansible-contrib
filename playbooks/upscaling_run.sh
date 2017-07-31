@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Parameters:
-# -i INV          name of ansible inventory directory (must be in cwd)
+# -i INV          path to ansible inventory (relative path)
 # -e nodes=NUMBER number of nodes after upscaling 
 # -h              displays script information, usage
 # -v              sets verbosity in ansible-playbook
@@ -18,7 +18,7 @@ Usage: `basename $0` [-h] [-e nodes=N] -i path_to_inventory
 Parameters:
 -h                    Display this message.
 -v                    Set output verbosity (to -vvv).
--i path_to_inventory  Set name of inventory directory (must be in cwd).
+-i path_to_inventory  Set inventory directory (relative path).
 -e nodes=N            Set number of nodes after autoscaling.
                       If not set, deployment is incremented by 1 by default."
 
@@ -33,7 +33,7 @@ while [[ $# -gt 0 ]]; do
     -i|--inventory)
       INVENTORY="$2"
       if [[ ! -d $INVENTORY ]]; then
-        echo "Passed argument (-i) is not an inventory directory." >&2
+        echo "$INVENTORY is not a directory." >&2
         exit 1
       fi
       shift;shift
@@ -65,7 +65,7 @@ fi
 
 ansible-playbook $ANSIBLE_PARAMS -i "$INVENTORY" \
 openshift-ansible-contrib/playbooks/upscaling_pre-tasks.yaml \
--e "$EXTERNAL_VAR" -e "inv_directory=$INVENTORY" $VERBOSE
+-e "$EXTERNAL_VAR" -e "inv_directory=${INVENTORY%/}" $VERBOSE
 
 # Check that pre-tasks were successfully completed
 if [[ $? -ne 0 ]]; then
