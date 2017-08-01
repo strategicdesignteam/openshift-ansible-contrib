@@ -18,7 +18,7 @@ Usage: ./`basename $0` [-h] [-e nodes=N] -i path_to_inventory
 Parameters:
 -h                    Display this message.
 -v                    Set output verbosity (to -vvv).
--i path_to_inventory  Set inventory directory (relative path).
+-i path_to_inventory  Set inventory directory.
 -e nodes=N            Set number of nodes after autoscaling.
                       If not set, deployment is incremented by 1 by default."
 
@@ -64,7 +64,7 @@ fi
 # - update openstack_num_nodes variable in inventory
 ansible-playbook $ANSIBLE_PARAMS -i "$INVENTORY" \
 openshift-ansible-contrib/playbooks/upscaling_pre-tasks.yaml \
--e "$EXTERNAL_VAR" -e "inv_directory=${INVENTORY%/}" $VERBOSE
+-e "$EXTERNAL_VAR" $VERBOSE
 
 # Check that pre-tasks were successfully completed
 if [[ $? -ne 0 ]]; then

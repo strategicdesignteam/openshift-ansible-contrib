@@ -221,6 +221,30 @@ Once it succeeds, you can install openshift by running:
     ansible-playbook openshift-ansible/playbooks/byo/config.yml
 
 
+## Scale Deployment up/down
+
+### Scaling up
+
+1. Make sure that `openshift-ansible-contrib/playbokos/provisioning/openstack/upscaling_run.sh` is executable. If not, run `chmod +x <file>`
+2. Check that `ansible_become: true` is set in `<inventory>/group_vars/OSEv3.yml`
+3. Go to a directory that contains both `inventory` and `openshift-ansible*` directories.
+4. Run the script:
+
+    ./openshift-ansible-contrib/playbooks/upscaling_run.sh -i <path to inventory>
+    [-e nodes=<new number of nodes>] [-h] [-v]
+
+5. To make sure that the deployment was scaled up correctly, you can try scheduling some workload to the newly created nodes.
+
+Information about script usage and parameters can be displayed by running the script with `-h` parameter.
+
+Additional notes:
+- If `-e` is not set, deployment is incremented by 1 application node by default.
+  Otherwise, enter argument as if running `ansible-playbook`, i. e. `-e key=value`
+- If `v` (verbosity) is set, it uses `-vvv` ansible verbosity mode.
+- If you renamed `openshift-ansible-contrib` inventory, the name must also be changed
+in the script (in both `ansible-playbook` calls at the end of the code).
+
+
 ## License
 
 As the rest of the openshift-ansible-contrib repository, the code here is

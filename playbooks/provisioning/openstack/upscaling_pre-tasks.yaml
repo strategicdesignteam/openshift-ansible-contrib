@@ -21,6 +21,6 @@
   tasks:
   - name: Replace openstack_num_nodes value
     lineinfile:
-      path: ../../{{ inv_directory }}/group_vars/all.yml
+      path: '{{ inventory_dir ~ "/group_vars/all.yml" }}'
       regexp: '^openstack_num_nodes:'
-      line: 'openstack_num_nodes: {{ hostvars[groups["masters"][0]]["nodes"] }} '
+      line: 'openstack_num_nodes: {{ hostvars[groups["masters"][0]]["nodes"] }}'
