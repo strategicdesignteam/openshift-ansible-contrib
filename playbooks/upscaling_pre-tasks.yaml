@@ -17,7 +17,6 @@
         ({{ oc_old_result.stdout | int }}).
 
 # Update openstack_num_nodes value in the inventory
-# TODO: custom path to inventory
 - hosts: localhost
   tasks:
   - name: Replace openstack_num_nodes value

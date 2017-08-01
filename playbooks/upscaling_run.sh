@@ -13,7 +13,7 @@ EXTERNAL_VAR=
 VERBOSE= # for now, it means -vvv
 USAGE="Description: This script runs up-scaling method.
 
-Usage: `basename $0` [-h] [-e nodes=N] -i path_to_inventory
+Usage: ./`basename $0` [-h] [-e nodes=N] -i path_to_inventory
 
 Parameters:
 -h                    Display this message.
@@ -53,16 +53,15 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-# Check that required variable is empty
+# Check that required variable is not empty
 if [[ -z "${INVENTORY}" ]]; then
   echo "Parameter -i is required. For more information, use -h|--help"
   exit 1
 fi
 
 # Run upscaling_pre-tasks.yaml to:
-# - do preverification based on entered number of nodes
+# - run preverification based on entered number of nodes
 # - update openstack_num_nodes variable in inventory
-
 ansible-playbook $ANSIBLE_PARAMS -i "$INVENTORY" \
 openshift-ansible-contrib/playbooks/upscaling_pre-tasks.yaml \
 -e "$EXTERNAL_VAR" -e "inv_directory=${INVENTORY%/}" $VERBOSE
@@ -72,8 +71,9 @@ if [[ $? -ne 0 ]]; then
   exit 1
 fi
 
-# Run upscaling_scale-up.yaml to rerun provisioning and installation
-# and verify the result
+# Run upscaling_scale-up.yaml to:
+# - rerun provisioning and installation
+# - verify the result
 ansible-playbook $ANSIBLE_PARAMS -i "$INVENTORY" \
 openshift-ansible-contrib/playbooks/upscaling_scale-up.yaml \
 -e "$EXTERNAL_VAR" $VERBOSE
