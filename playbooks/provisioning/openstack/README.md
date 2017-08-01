@@ -233,17 +233,16 @@ Once it succeeds, you can install openshift by running:
     ./openshift-ansible-contrib/playbooks/upscaling_run.sh -i <path to inventory>
     [-e nodes=<new number of nodes>] [-h] [-v]
 
-5. To make sure that the deployment was scaled up correctly, you can try scheduling some workload to the newly created nodes.
-
-Information about script usage and parameters can be displayed by running the script with `-h` parameter.
-
-Additional notes:
+**Additional notes**:
 - If `-e` is not set, deployment is incremented by 1 application node by default.
   Otherwise, enter argument as if running `ansible-playbook`, i. e. `-e key=value`
-- If `v` (verbosity) is set, it uses `-vvv` ansible verbosity mode.
+- If `-v` (verbosity) is set, it uses `-vvv` ansible verbosity mode.
 - If you renamed `openshift-ansible-contrib` inventory, the name must also be changed
 in the script (in both `ansible-playbook` calls at the end of the code).
 
+5. To make sure that the deployment was scaled up correctly, you can try scheduling some workload to the newly created nodes.
+
+Information about script usage and parameters can be displayed by running the script with `-h` parameter.
 
 ## License
 
