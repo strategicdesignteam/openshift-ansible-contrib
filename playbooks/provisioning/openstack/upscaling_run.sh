@@ -12,7 +12,7 @@
 ANSIBLE_PARAMS="--user openshift --private-key ~/.ssh/openshift"
 INVENTORY=
 OPENSHIFT_ANSIBLE="../../../../openshift-ansible"
-OPENSHIFT_ANSIBLE_CONTRIB_NAME="./openshift-ansible-contrib"
+OPENSHIFT_ANSIBLE_CONTRIB="./openshift-ansible-contrib"
 NODES_VAR=
 VERBOSE= # for now, it means -vvv
 USAGE="Description: This script runs up-scaling method.
@@ -37,7 +37,7 @@ while [[ $# -gt 0 ]]; do
       shift;shift
       ;;
     -i|--inventory)
-      INVENTORY="$2"
+      INVENTORY="${2%/}"
       if [[ ! -d $INVENTORY ]]; then
         echo "$INVENTORY is not a directory." >&2
         exit 1
@@ -45,7 +45,7 @@ while [[ $# -gt 0 ]]; do
       shift;shift
       ;;
     -o|--openshift)
-      OPENSHIFT_ANSIBLE="$2"
+      OPENSHIFT_ANSIBLE="${2%/}"
       if [[ ! -d $OPENSHIFT_ANSIBLE ]]; then
         echo "$OPENSHIFT_ANSIBLE is not a directory." >&2
         exit 1
@@ -53,7 +53,7 @@ while [[ $# -gt 0 ]]; do
       shift;shift
       ;;
     -c|--contrib)
-      OPENSHIFT_ANSIBLE_CONTRIB="$2"
+      OPENSHIFT_ANSIBLE_CONTRIB="${2%/}"
       if [[ ! -d $OPENSHIFT_ANSIBLE_CONTRIB ]]; then
         echo "$OPENSHIFT_ANSIBLE_CONTRIB is not a directory." >&2
         exit 1
