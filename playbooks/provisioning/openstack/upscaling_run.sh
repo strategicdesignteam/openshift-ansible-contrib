@@ -125,5 +125,4 @@ fi
 # - verify the result
 ansible-playbook $ANSIBLE_PARAMS -i "$INVENTORY" \
 $OPENSHIFT_ANSIBLE_CONTRIB/playbooks/provisioning/openstack/upscaling_scale-up.yaml \
--e "$NODES_VAR" -e "openshift_ansible_dir=$OPENSHIFT_ANSIBLE" \
--e "openshift_ansible_contrib_dir=$OPENSHIFT_ANSIBLE_CONTRIB" $VERBOSE
+-e "$NODES_VAR" -e "openshift_ansible_dir=$OPENSHIFT_ANSIBLE" $VERBOSE
