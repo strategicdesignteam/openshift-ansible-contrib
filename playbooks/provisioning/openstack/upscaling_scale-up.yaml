@@ -1,6 +1,6 @@
 ---
 # Run provision.yaml with higher number of nodes to create a new app-node VM
-- include: provision.yaml
+- include: '{{ openshift_ansible_contrib_dir ~ "/playbooks/provisioning/openstack/provision.yaml" }}'
 
 # Run config.yml to update openshift installation (add the new node(s))
 - include: '{{ openshift_ansible_dir ~ "/playbooks/byo/config.yml" }}'
