@@ -11,8 +11,8 @@
 # Variables
 ANSIBLE_PARAMS="--user openshift --private-key ~/.ssh/openshift"
 INVENTORY=
-OPENSHIFT_ANSIBLE="./openshift-ansible"
-OPENSHIFT_ANSIBLE_CONTRIB="./openshift-ansible-contrib"
+OPENSHIFT_ANSIBLE="openshift-ansible"
+OPENSHIFT_ANSIBLE_CONTRIB="openshift-ansible-contrib"
 NODES_VAR=
 VERBOSE= # for now, it means -vvv
 USAGE="Description: This script runs up-scaling method.
