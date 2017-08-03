@@ -1,10 +1,11 @@
 ---
 # Run provision.yaml with higher number of nodes to create a new app-node VM
-- include: provision.yaml
+- include: '{{ openshift_ansible_contrib_dir ~ "/playbooks/provisioning/openstack/provision.yaml" }}'
+  vars:
+    openshift_ansible_contrib_dir: ../../../../openshift-ansible-contrib
 
 # Run config.yml to update openshift installation (add the new node(s))
-# TODO kpilatov: let the user specify the path using a variable
-- include: ../../../../openshift-ansible/playbooks/byo/config.yml
+- include: '{{ openshift_ansible_dir ~ "/playbooks/byo/config.yml" }}'
 
 # Post-verification: Verify new number of nodes
 # TODO: remove verification based on oc?, keep openstack_num_nodes

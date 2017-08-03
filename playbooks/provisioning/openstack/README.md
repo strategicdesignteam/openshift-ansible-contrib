@@ -225,22 +225,23 @@ Once it succeeds, you can install openshift by running:
 
 ### Scaling up
 
-1. Make sure that `openshift-ansible-contrib/playbokos/provisioning/openstack/upscaling_run.sh` is executable. If not, run `chmod +x <file>`
+1. Make sure that `openshift-ansible-contrib/playbooks/provisioning/openstack/upscaling_run.sh` is executable. If not, run `chmod +x <file>`
 2. Check that `ansible_become: true` is set in `<inventory>/group_vars/OSEv3.yml`
-3. Go to a directory that contains both `inventory` and `openshift-ansible*` directories.
+3. Go to a parent directory of `inventory` and `openshift-ansible*` directories (recommended setup, but paths can be customised).
 4. Run the script:
-
-    ./openshift-ansible-contrib/playbooks/upscaling_run.sh -i <path to inventory>
-    [-e nodes=<new number of nodes>] [-h] [-v]
-
+```
+<path to openshift-ansible-contrib>/playbooks/provisioning/openstack/upscaling_run.sh
+-i <path to inventory> [-e nodes=<new number of nodes>]
+[-o <path to openshift-ansible>] [-c <path to openshift-ansible-contrib>] [-h] [-v]
+```
 5. To make sure that the deployment was scaled up correctly, you can try scheduling some workload to the newly created nodes.
 
-**Additional notes**:
+**Additional script notes**:
 - If `-e` is not set, deployment is incremented by 1 application node by default.
-  Otherwise, enter argument as if running `ansible-playbook`, i. e. `-e key=value`
+  Otherwise, enter argument as if running `ansible-playbook`, i. e. `-e key=value`.
+- If `-o` is not set, default setup and name is assumed (parent directory containing `openshift-ansible`, `openshift-ansible-contrib` and inventory directories).
+- If `-c` is not set, default setup and name is assumed.
 - If `-v` (verbosity) is set, it uses `-vvv` ansible verbosity mode.
-- If you renamed `openshift-ansible-contrib` inventory, the name must also be changed
-in the script (in both `ansible-playbook` calls at the end of the code).
 - Information about script usage and parameters can be displayed by running the script with `-h` parameter.
 
 ## License
