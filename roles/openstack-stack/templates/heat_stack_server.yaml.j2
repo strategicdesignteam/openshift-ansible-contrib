@@ -134,6 +134,7 @@ resources:
       user_data:
         get_file: user-data
       user_data_format: RAW
+      user_data_update_policy: IGNORE
       metadata:
         group: { get_param: group }
         environment: { get_param: cluster_env }
@@ -156,6 +157,7 @@ resources:
       floating_network: { get_param: floating_network }
       port_id: { get_resource: port }
 
+{% if not ephemeral_volumes|default(false)|bool %}
   cinder_volume:
     type: OS::Cinder::Volume
     properties:
@@ -168,3 +170,4 @@ resources:
       volume_id: { get_resource: cinder_volume }
       instance_uuid: { get_resource: server }
       mountpoint: /dev/sdb
+{% endif %}
