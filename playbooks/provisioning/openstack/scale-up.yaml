@@ -21,7 +21,7 @@
         (but it is {{ increment_by | int }}".
   - name: Update openstack_num_nodes variable (if there was a deployment to begin with)
     set_fact:
-      openstack_num_nodes: "{{ hostvars[groups["masters"][0]]["oc_old_result"].stdout | int + increment_by | int }}"
+      openstack_num_nodes: "{{ hostvars[groups['masters'][0]]['oc_old_result'].stdout | int + increment_by | int }}"
     when:
     - "'masters' in groups"
     -  hostvars[groups["masters"][0]]["oc_old_result"] is defined
