@@ -24,7 +24,7 @@
       openstack_num_nodes: "{{ hostvars[groups['masters'][0]]['oc_old_result'].stdout | int + increment_by | int }}"
     when:
     - "'masters' in groups"
-    -  hostvars[groups["masters"][0]]["oc_old_result"] is defined
+    - hostvars[groups["masters"][0]]["oc_old_result"] is defined
     register: result
 
   - name: Update openstack_num_nodes variable (if there was no deployment)
@@ -86,4 +86,3 @@
         FAIL: Number of application nodes has not been updated in vars
         (it should be {{ oc_new_result.stdout | int }} but it is
         {{ openstack_num_nodes | int }}).
-
