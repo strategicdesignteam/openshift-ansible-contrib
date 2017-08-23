@@ -346,24 +346,17 @@ needed anymore.
 
 ### Scaling up
 
-1. Make sure that `openshift-ansible-contrib/playbooks/provisioning/openstack/upscaling_run.sh` is executable. If not, run `chmod +x <file>`
-2. Check that `ansible_become: true` is set in `<inventory>/group_vars/OSEv3.yml`
-3. Go to a parent directory of `inventory` and `openshift-ansible*` directories (recommended setup, but paths can be customised).
-4. Run the script:
-```
-<path to openshift-ansible-contrib>/playbooks/provisioning/openstack/upscaling_run.sh
--i <path to inventory> [-e nodes=<new number of nodes>]
-[-o <path to openshift-ansible>] [-c <path to openshift-ansible-contrib>] [-h] [-v]
-```
-5. To make sure that the deployment was scaled up correctly, you can try scheduling some workload to the newly created nodes.
+One can scale up the number of application nodes by executing the ansible playbook
+`openshift-ansible-contrib/playbooks/provisioning/openstack/scale-up.yaml`.
+This process can be done even if there is currently no deployment available.
+The `increment_by` variable is used to specify by how much the deployment should
+be scaled up (if none exists, it serves as a target number of application nodes).
 
-**Additional script notes**:
-- If `-e` is not set, deployment is incremented by 1 application node by default.
-  Otherwise, enter argument as if running `ansible-playbook`, i. e. `-e key=value`.
-- If `-o` is not set, default setup and name is assumed (parent directory containing `openshift-ansible`, `openshift-ansible-contrib` and inventory directories).
-- If `-c` is not set, default setup and name is assumed.
-- If `-v` (verbosity) is set, it uses `-vvv` ansible verbosity mode.
-- Information about script usage and parameters can be displayed by running the script with `-h` parameter.
+Usage:
+
+```
+ansible-playbook --user openshift --private-key ~/.ssh/openshift -i <path to inventory> openshift-ansible-contrib/playbooks/provisioning/openstack/scale-up.yaml` [-e increment_by=<number>]
+```
 
 ## License
 
