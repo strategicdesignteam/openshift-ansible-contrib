@@ -1,6 +1,6 @@
 ---
 # Get current number of app nodes
-- hosts: groups["masters"][0]
+- hosts: masters[0]
   tasks:
   - name: Get number of app nodes
     shell: oc get nodes -l autoscaling=app --no-headers=true | wc -l
@@ -18,7 +18,7 @@
       that: 'increment_by | int >= 1'
       msg: >
         FAIL: The value of increment_by must be at least 1
-        (but it is {{ increment_by | int }}".
+        (but it is {{ increment_by | int }}).
   - name: Update openstack_num_nodes variable (if there was a deployment to begin with)
     set_fact:
       openstack_num_nodes: "{{ hostvars[groups['masters'][0]]['oc_old_result'].stdout | int + increment_by | int }}"
@@ -30,7 +30,7 @@
   - name: Update openstack_num_nodes variable (if there was no deployment)
     set_fact:
       openstack_num_nodes: "{{ increment_by }}"
-    when: result|skipped
+    when: result | skipped
 
   - debug:
       var: openstack_num_nodes
@@ -43,46 +43,25 @@
 - include: ../../../../openshift-ansible/playbooks/byo/config.yml
 
 # Post-verification: Verify new number of nodes
-- hosts: groups["masters"][0]]
+- hosts: masters[0]
   tasks:
   - name: Get number of nodes
     shell: oc get nodes -l autoscaling=app --no-headers=true | wc -l
     register: oc_new_result
   - name: Check that the actual result matches the defined value (if there was a deployment to begin with)
     assert:
-      that: 'oc_new_result.stdout | int == (oc_old_result.stdout | int + increment_by)'
+      that: 'oc_new_result.stdout | int == (oc_old_result.stdout | int + hostvars["localhost"]["increment_by"] | int)'
       msg: >
         FAIL: Number of application nodes has not been increased accordingly
-        (it should be {{ oc_old_result.stdout | int + increment_by }}
+        (it should be {{ oc_old_result.stdout | int + hostvars["localhost"]["increment_by"] | int }}
         but it is {{ oc_new_result.stdout | int }}).
     when: oc_old_result is defined
 
   - name: Check that the actual result matches the defined value (if there was no deployment)
     assert:
-      that: 'oc_new_result.stdout | int == increment_by | int'
+      that: 'oc_new_result.stdout | int == hostvars["localhost"]["increment_by"] | int'
       msg: >
         FAIL: Number of application nodes has not been increased accordingly
-        (it should be {{ oc_old_result.stdout | int + increment_by }}
+        (it should be {{ oc_old_result.stdout | int + hostvars["localhost"]["increment_by"] | int}}
         but it is {{ oc_new_result.stdout | int }}).
     when: oc_old_result is not defined
-
-# Post-verification: Check that openstack_num_nodes variable changed as well
-- hosts: groups["masters"][0]]
-  tasks:
-  - name: Check current number of nodes based on vars on master
-    assert:
-      that: ' oc_new_result.stdout | int == openstack_num_nodes | int'
-      msg: >
-        FAIL: Number of application nodes has not been updated in vars
-        (it should be {{ oc_new_result.stdout | int }} but it is
-        {{ openstack_num_nodes | int }}).
-
-- hosts: localhost
-  tasks:
-  - name: Check current number of nodes based on vars on master
-    assert:
-      that: ' hostvars[groups["masters"][0]]["oc_new_result"].stdout | int == openstack_num_nodes | int'
-      msg: >
-        FAIL: Number of application nodes has not been updated in vars
-        (it should be {{ oc_new_result.stdout | int }} but it is
-        {{ openstack_num_nodes | int }}).
