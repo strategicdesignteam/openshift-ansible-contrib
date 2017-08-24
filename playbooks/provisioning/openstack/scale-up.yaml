@@ -32,9 +32,6 @@
       openstack_num_nodes: "{{ increment_by }}"
     when: result | skipped
 
-  - debug:
-      var: openstack_num_nodes
-
 # Run provision.yaml with higher number of nodes to create a new app-node VM
 - include: provision.yaml
 
