@@ -66,6 +66,6 @@
       that: 'oc_new_result.stdout | int == hostvars["localhost"]["increment_by"] | int'
       msg: >
         FAIL: Number of application nodes has not been increased accordingly
-        (it should be {{ oc_old_result.stdout | int + hostvars["localhost"]["increment_by"] | int}}
+        (it should be {{ hostvars["localhost"]["increment_by"] | int }}
         but it is {{ oc_new_result.stdout | int }}).
     when: oc_old_result is not defined
