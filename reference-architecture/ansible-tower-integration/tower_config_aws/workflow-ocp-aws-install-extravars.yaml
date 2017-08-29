@@ -3,7 +3,7 @@ region: us-east-1
 stack_name: openshift-infra
 add_node: no
 deploy_glusterfs: false
-ami: ami-a33668b4
+ami: ami-c998b6b2
 no_confirm: True
 master_instance_type: m4.large
 node_instance_type: t2.medium

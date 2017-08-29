@@ -8,14 +8,14 @@ Finally, you might want to check out this [demonstration video](https://youtu.be
 
 ## Overview
 
-The diagram below illustrates the desired end state of this guide - to have Ansible Tower workflows able to deploy OpenShift and other services on various cloud providers, including creating the necessary virtual infrastructure on each cloud provider. 
+The diagram below illustrates the desired end state of this guide - to have Ansible Tower workflows able to deploy OpenShift and other services on various cloud providers, including creating the necessary virtual infrastructure on each cloud provider.
 
 ![Overview Diagram](https://github.com/openshift/openshift-ansible-contrib/blob/master/reference-architecture/ansible-tower-integration/Overview_Diagram.png)
 
-Here are the major stages to achieving the desired end state. 
-1. Deploying Ansible Tower on the desired cloud provider. 
+Here are the major stages to achieving the desired end state.
+1. Deploying Ansible Tower on the desired cloud provider.
 2. Configuring Ansible Tower to deploy OpenShift and other services on the cloud provider of choice.
-3. Performing a deployment. 
+3. Performing a deployment.
 
 Currently this guide has support for Amazon Web Services and Microsoft Azure, but we intend to add instructions for other providers. Deployment of the reference architectures for OpenShift Container Platform takes approximately 60 minutes, but your mileage my vary.
 
@@ -45,7 +45,7 @@ We would welcome the addition of the the following sections to this guide:
 
 ## Configuring Tower
 
-Once you have deployed Ansible Tower on a provider, you can then configure it to deploy OpenShift Container Platform, CloudForms, and enable Red Hat Insights on OCP and CloudForms. The following sections detail how to do this. 
+Once you have deployed Ansible Tower on a provider, you can then configure it to deploy OpenShift Container Platform, CloudForms, and enable Red Hat Insights on OCP and CloudForms. The following sections detail how to do this.
 
 The directories contained within this directory roughly include:
 
@@ -65,7 +65,7 @@ This guide shows you how to use the master branch of [OpenShift-Ansible-Contrib]
 Once you have Ansible Tower running and licensed you can clone and run the tower_config_aws playbook with the appropriate variables. This will configure Ansible. Just make sure you have your tower_cli.cfg file setup and also make sure you have your AWS_KEY and AWS_SECRET as well as the ssh key you wish to use to authenticate to your machines. Then you can do the following:
 
 Set the appropriate host, username, and password in ~/.tower_cli.cfg.
-```$ $ vi ~/.tower_cli.cfg 
+```$ $ vi ~/.tower_cli.cfg
 host=tower.domain.com
 username=admin
 password=yourpassword
@@ -92,7 +92,7 @@ $ ansible-playbook tower_config_aws.yaml --extra-vars "AWS_MACHINE_SSH_KEY=<PATH
 | TOWER_USER                 | yes                | Username (admin)                              |
 | TOWER_PASSWORD             | yes                | Password for TOWER_USER                       |
 
-This will configure tower with all the inventories, credentials, job_templates, and workflows to begin deploying across Amazon Web Services. After this is done you will need to log into Ansible Tower and edit the job named "workflow-ocp-aws-install". You will need to edit the extra_vars section of the job named workflow-ocp-aws-install and change the values wherever they are set to "CHANGEME" to the appropriate values for your environment. You can find the documentation for those values in the specific provider reference architectures. For example, here in the [AWS Reference Architecture](https://github.com/openshift/openshift-ansible-contrib/reference-architecture/aws-ansible)
+This will configure tower with all the inventories, credentials, job_templates, and workflows to begin deploying across Amazon Web Services. But before running this playbook, you should modify your job template variables for your specific environment in "workflow-ocp-aws-install-extravars.yaml".  Just update all the "CHANGEME" settings with your own values.  You can find the documentation for those values in the specific provider reference architectures. For example, here in the [AWS Reference Architecture](https://github.com/openshift/openshift-ansible-contrib/reference-architecture/aws-ansible)
 
 The workflow-ocp-aws-install can now be run. It will:
 
@@ -143,7 +143,7 @@ This will configure tower with all the inventories, credentials, job_templates, 
 $ azure ad sp show -c "james7openshiftcloudprovider"
 info:    Executing command ad sp show
 + Getting Active Directory service principals
-data:    Object Id:               aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaa 
+data:    Object Id:               aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaa
 data:    Display Name:            james7openshiftcloudprovider
 data:    Service Principal Names:
 data:                             zzzzzzzz-zzzz-zzzz-zzzz-zzzzzzzzzz
@@ -170,5 +170,3 @@ We would welcome the addition of the following sections:
 + Configuring Ansible Tower for deployments on Google Cloud Platform
 + Configuring Ansible Tower for deployments on OpenStack
 + Configuring Ansible Tower for deployments on VMware
-
-
