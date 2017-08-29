@@ -1,67 +1,32 @@
 ---
 
-- name: Install pip
+- name: Install required RPM packages
   yum:
-    name: python2-pip
+    name: '{{ item }}'
     state: present
+  with_items:
+    - python-setuptools
+    - gcc
+    - python-devel
+    - git
+    - pyOpenSSL
+    - python-netaddr
+    - python-six
+    - python-click
+    - python-httplib2
   become: true
 
-- name: Install git
-  yum:
-    name: git
-    state: present
+- name: Install PIP
+  command: easy_install pip
   become: true
 
-- name: Install Tower CLI
+- name: Install required pip modules
   pip:
-    name: ansible-tower-cli
-  become: true
-
-- name: Install ManageIQ module
-  pip:
-    name: manageiq-client
-  become: true
-
-- name: Install python2-boto
-  yum:
-    name: python2-boto
-    state: present
-  become: true
-
-- name: Install pyOpenSSL
-  yum:
-    name: pyOpenSSL
-    state: present
-  become: true
-
-- name: Install python-netaddr
-  yum:
-    name: python-netaddr
-    state: present
-  become: true
-
-- name: Install python-six
-  yum:
-    name: python-six
-    state: present
-  become: true
-
-- name: Install python2-boto3
-  yum:
-    name: python2-boto3
-    state: present
-  become: true
-
-- name: Install python-click
-  yum:
-    name: python-click
-    state: present
-  become: true
-
-- name: Install python-httplib2
-  yum:
-    name: python-httplib2
-    state: present
+    name: '{{ item }}'
+  with_items:
+    - ansible-tower-cli
+    - manageiq-client
+    - boto3
   become: true
 
 - name: Create tower organization
@@ -246,32 +211,28 @@
     state: present
     tower_config_file: "~/.tower_cli.cfg"
 
+- name: Delete existing workflow-ocp-aws-install if any
+  command: tower-cli workflow delete --name="workflow-ocp-aws-install"
+
 - name: Create workflow-ocp-aws-install
   command: tower-cli workflow create --name="workflow-ocp-aws-install" --organization="Default" --description="A workflow for deploying OCP on AWS" -e @workflow-ocp-aws-install-extravars.yaml
 
+- name: Backup schema file
+  copy:
+    src: schema.yml
+    dest: /tmp/schema.yml
+
 - name: Replace inventory source
-  lineinfile:
-    path: schema.yml
+  replace:
+    path: /tmp/schema.yml
     regexp: 'REPLACEME'
-    line: 'aws (aws-inventory - {{ myoutput.stdout }})'
+    replace: 'aws (aws-inventory - {{ myoutput.stdout }})'
 
 - name: Replace inventory source second time
-  lineinfile:
-    path: schema.yml
+  replace:
+    path: /tmp/schema.yml
     regexp: 'ONEMORETIME'
-    line: 'aws (aws-inventory - {{ myoutput.stdout }})'
+    replace: 'aws (aws-inventory - {{ myoutput.stdout }})'
 
 - name: Create a schema for workflow-ocp-aws-install
-  command: tower-cli workflow schema workflow-ocp-aws-install @schema.yml
-
-- name: Reset schema file in case we run again, again
-  lineinfile:
-    path: schema.yml
-    regexp: '^(.*)inventory_source'
-    line: '            - inventory_source: ONEMORETIME'
-
-- name: Reset schema file in case we run again
-  lineinfile:
-    path: schema.yml
-    regexp: '^(.*)inventory_source.*(?<!\ONEMORETIME)$'
-    line: '  - inventory_source: REPLACEME'
+  command: tower-cli workflow schema workflow-ocp-aws-install @/tmp/schema.yml
