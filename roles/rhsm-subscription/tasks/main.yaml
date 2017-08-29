@@ -74,6 +74,7 @@
 
         - name: Attach subscription
           command: subscription-manager attach --pool="{{ rhsm_pool }}"
+          ignore_errors: yes
 
       #when: rhsm_pool is defined and rhsm_pool and not skip_packages is defined
       when:
