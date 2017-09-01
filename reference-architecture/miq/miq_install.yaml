@@ -1,7 +1,6 @@
 
 
 
-
 - name: Get OCP token for MIQ
   hosts: tag_Name_ose_master01_strategicdesign_io
   become: yes
@@ -16,4 +15,4 @@
   become: no
 
   roles:
-    - { role: cfme-ose-provider, token: "{{ hostvars['ose_master01_strategicdesign_io']['token'] }}", miq_url: "https://httpd-miq.apps.strategicdesign.io/"}
+    - { role: miq_set_ocp_provider, token: "{{ hostvars['ose_master01_strategicdesign_io']['token'] }}", miq_url: "{{ miq_url}}" }
