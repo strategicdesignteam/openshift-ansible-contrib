@@ -1,0 +1,11 @@
+---
+
+- name: Get Openshift token
+  command: oc sa get-token -n management-infra management-admin
+  register: token
+
+- debug: var=token.stdout
+
+- name: Set token as an Openshift fact
+  set_fact:
+    token: "{{ token.stdout }}"

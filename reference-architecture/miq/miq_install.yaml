@@ -1,0 +1,19 @@
+
+
+
+
+- name: Get OCP token for MIQ
+  hosts: tag_Name_ose_master01_strategicdesign_io
+  become: yes
+
+  roles:
+    - { role: miq_get_ocp_token }
+
+
+- name: Configure Openshift as a CFME provider
+  hosts: localhost
+  gather_facts: no
+  become: no
+
+  roles:
+    - { role: cfme-ose-provider, token: "{{ hostvars['ose_master01_strategicdesign_io']['token'] }}", miq_url: "https://httpd-miq.apps.strategicdesign.io/"}
